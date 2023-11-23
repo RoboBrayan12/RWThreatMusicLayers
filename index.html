@@ -3,7 +3,8 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Document</title>
+		<link rel="icon" href="images/icon.png" />
+		<title>RW Threat Music Player</title>
 		<link rel="stylesheet" href="reset.css" />
 		<link rel="stylesheet" href="style.css" />
 	</head>
@@ -19,13 +20,11 @@
 			<h1 id="soundtrackTitle">Title</h1>
 			<h2 id="soundtrackName">Name</h2>
 			<div class="container">
-				<button type="button" class="buttonShort" onclick="playAll()">Play</button>
-				<button type="button" class="buttonShort" onclick="pauseAll()">Pause</button>
+				<button type="button" class="buttonToggle" id="playToggle" value="false" onclick="playAll()">Play</button>
+				<button type="button" class="buttonToggle" id="pauseToggle" value="false" onclick="pauseAll()">Pause</button>
 				<button type="button" class="buttonShort" onclick="stopAll()">Stop</button>
 				<button type="button" class="buttonShort" onclick="resync()">Sync</button>
-				<input type="checkbox" id="loopCheckbox" onchange="loopAll(this.checked)" />
-				<button type="button" class="buttonToggle" id="loopToggle" value="false" onclick="toggleLoop()">Loop</button>
-				<label for="loopCheckbox">Loop</label>
+				<button type="button" class="buttonToggle" id="loopToggle" value="false" onclick="toggleLoop(this.value != `true`)">Loop</button>
 				<hr />
 				<section id="groupSwitch"></section>
 				<script src="main.js"></script>

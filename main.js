@@ -33,17 +33,19 @@ const soundtracklayers = {
 	LM: ["KICK", "PERC2", "SNARE", "PERC1", "BASS", "PAD", "ARPS", "WEIRD", "NOISE"],
 }
 
-const transitionEffect = document.getElementById("transitionEffect")
 const menu = document.getElementById("soundtrackMenu")
-const container = document.getElementById("groupSwitch")
-const loopCheckbox = document.getElementById("loopCheckbox")
 const soundtrackTitle = document.getElementById("soundtrackTitle")
 const soundtrackName = document.getElementById("soundtrackName")
+const playToggle = document.getElementById("playToggle")
+const pauseToggle = document.getElementById("pauseToggle")
+const loopToggle = document.getElementById("loopToggle")
+const container = document.getElementById("groupSwitch")
 const background = document.getElementById("content")
-
-const sound_UIArp = document.querySelector(`#sound_UIArp`)
-const sound_UIMetal1 = document.querySelector(`#sound_UIMetal1`)
-const sound_UIMetal3 = document.querySelector(`#sound_UIMetal3`)
+const transitionEffect = document.getElementById("transitionEffect")
+const sound_UI = []
+sound_UI["Arp"] = document.querySelector(`#sound_UIArp`)
+sound_UI["Metal1"] = document.querySelector(`#sound_UIMetal1`)
+sound_UI["Metal3"] = document.querySelector(`#sound_UIMetal3`)
 
 for (let soundtrackItem in soundtrackNames) {
 	const newButton = document.createElement("button")
@@ -61,29 +63,26 @@ for (let soundtrackItem in soundtrackNames) {
 function toggleMenu() {
 	if (menu.style.display == "inline-flex") {
 		menu.style.display = "none"
-		sound_UIMetal3.play()
+		playUISound("Metal3")
 	} else {
 		menu.style.display = "inline-flex"
-		sound_UIMetal1.currentTime = 0
-		sound_UIMetal1.play()
+		playUISound("Metal1")
 	}
 }
-
-let soundtrack = "SU"
-applySoundtrack(soundtrack, true)
 
 function loadSoundTrack(value) {
 	transitionEffect.style.zIndex = 1
 	transitionEffect.style.backgroundColor = "black"
-
-	sound_UIArp.currentTime = 0
-	sound_UIArp.play()
+	playUISound("Arp", true)
 	setTimeout(function () {
 		applySoundtrack(value)
 		transitionEffect.style.backgroundColor = "transparent"
 		transitionEffect.style.zIndex = -1
 	}, 500)
 }
+
+let soundtrack = "SU"
+applySoundtrack(soundtrack)
 
 function applySoundtrack(value) {
 	soundtrack = value
@@ -95,6 +94,27 @@ function applySoundtrack(value) {
 		}
 	}
 
+	switch (soundtracklayers[soundtrack].length) {
+		case 5:
+		case 6:
+			container.style.width = "27rem"
+			break
+		case 9:
+		case 10:
+			container.style.width = "35rem"
+			break
+		default:
+			container.style.width = "34rem"
+	}
+
+	playToggle.value = false
+	pauseToggle.value = false
+	loopToggle.value = false
+
+	soundtrackTitle.innerHTML = soundtrackNames[soundtrack][0]
+	soundtrackName.innerHTML = `~ ${soundtrackNames[soundtrack][1]} ~`
+	background.style.backgroundImage = `url('backgrounds/landscape - ${soundtrack.toLowerCase()} - flat.png')`
+
 	for (let layer of soundtracklayers[soundtrack]) {
 		const newAudio = document.createElement("audio")
 		newAudio.src = `music/${soundtrackNames[soundtrack][0]} (${soundtrack})/TH_${soundtrack} - ${layer}.wav`
@@ -102,67 +122,79 @@ function applySoundtrack(value) {
 		newAudio.volume = 0
 		container.appendChild(newAudio)
 
-		const newInput = document.createElement("input")
-		newInput.type = "checkbox"
-		newInput.id = "switch_" + layer
-		newInput.onchange = function () {
-			toggle(this.id, this.checked)
+		const newButton = document.createElement("button")
+		newButton.type = "button"
+		newButton.id = "switch_" + layer
+		newButton.className = "buttonToggle"
+		newButton.value = false
+		newButton.onclick = function () {
+			toggleLayer(this)
 		}
-		container.appendChild(newInput)
-
-		const newLabel = document.createElement("label")
-		newLabel.htmlFor = "switch_" + layer
-		newLabel.innerHTML = layer
-		container.appendChild(newLabel)
+		newButton.innerHTML = layer
+		container.appendChild(newButton)
 	}
 
-	loopCheckbox.checked = false
+	const baseAudio = document.querySelector("#audio_" + soundtracklayers[soundtrack][0])
+	baseAudio.addEventListener("ended", function () {
+		if (!baseAudio.loop) {
+			playToggle.value = false
+		}
+	})
+}
 
-	soundtrackTitle.innerHTML = soundtrackNames[soundtrack][0]
-	soundtrackName.innerHTML = `~ ${soundtrackNames[soundtrack][1]} ~`
-	background.style.backgroundImage = `url('images/landscape/landscape - ${soundtrack.toLowerCase()} - flat.png')`
+function playUISound(value, ignore) {
+	const baseAudio = document.querySelector("#audio_" + soundtracklayers[soundtrack][0])
+	if (ignore || baseAudio.currentTime == 0 || baseAudio.paused || baseAudio.ended) {
+		sound_UI[value].currentTime = 0
+		sound_UI[value].play()
+	}
 }
 
 function playAll() {
+	playToggle.value = true
+	pauseToggle.value = false
 	for (let layer of soundtracklayers[soundtrack]) {
 		document.querySelector("#audio_" + layer).play()
 	}
 }
 function pauseAll() {
+	playToggle.value = false
+	pauseToggle.value = true
 	for (let layer of soundtracklayers[soundtrack]) {
 		document.querySelector("#audio_" + layer).pause()
 	}
+	playUISound("Metal1")
 }
 function stopAll() {
+	playToggle.value = false
+	pauseToggle.value = false
 	for (let layer of soundtracklayers[soundtrack]) {
 		const audio = document.querySelector("#audio_" + layer)
 		audio.pause()
 		audio.currentTime = 0
 	}
+	playUISound("Metal3")
 }
 function resync() {
+	playUISound("Metal3")
 	let baseTime = document.querySelector("#audio_" + soundtracklayers[soundtrack][0]).currentTime
 	for (let layer of soundtracklayers[soundtrack]) {
 		document.querySelector("#audio_" + layer).currentTime = baseTime
 	}
 }
-function loopAll(checked) {
+
+function toggleLoop(checked) {
+	playUISound("Metal1")
+	loopToggle.value = checked
 	for (let layer of soundtracklayers[soundtrack]) {
 		document.querySelector("#audio_" + layer).loop = checked
 	}
 }
 
-const loopToggle = document.getElementById("loopToggle")
-function toggleLoop() {
-	if (loopToggle.value == "true") {
-		loopToggle.value = "false"
-	} else {
-		loopToggle.value = "true"
-	}
-}
-
-function toggle(id, checked) {
-	let audio = document.getElementById("audio_" + id.slice(7))
+function toggleLayer(element) {
+	let checked = element.value != `true`
+	element.value = checked
+	let audio = document.getElementById("audio_" + element.id.slice(7))
 	if (checked) {
 		audio.volume = 1
 	} else {
