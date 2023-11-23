@@ -158,23 +158,24 @@ function playAll() {
 	}
 }
 function pauseAll() {
+	playUISound("Metal1", true)
 	playToggle.value = false
 	pauseToggle.value = true
 	for (let layer of soundtracklayers[soundtrack]) {
 		document.querySelector("#audio_" + layer).pause()
 	}
-	playUISound("Metal1")
 }
 function stopAll() {
+	playUISound("Metal3", true)
 	playToggle.value = false
 	pauseToggle.value = false
 	for (let layer of soundtracklayers[soundtrack]) {
 		document.getElementById("switch_" + layer).value = false
 		const audio = document.querySelector("#audio_" + layer)
 		audio.pause()
+		audio.volume = 0
 		audio.currentTime = 0
 	}
-	playUISound("Metal3")
 }
 function resync() {
 	playUISound("Metal3")
