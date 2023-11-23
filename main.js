@@ -169,6 +169,7 @@ function stopAll() {
 	playToggle.value = false
 	pauseToggle.value = false
 	for (let layer of soundtracklayers[soundtrack]) {
+		document.getElementById("switch_" + layer).value = false
 		const audio = document.querySelector("#audio_" + layer)
 		audio.pause()
 		audio.currentTime = 0
