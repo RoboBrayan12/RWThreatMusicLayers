@@ -1,0 +1,114 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+@font-face {
+	font-family: "Rodondo";
+	src: url("fonts/rodondo.otf") format("opentype");
+}
+
+#selectButton {
+	position: absolute;
+	top: 2rem;
+	right: 2rem;
+}
+#soundtrackMenu {
+	border: 2px solid white;
+	border-radius: 10px;
+	background-color: rgba(0, 0, 0, 0.8);
+	padding: 12px;
+	width: 40.2em;
+	flex-wrap: wrap;
+	row-gap: 10px;
+	justify-content: space-between;
+	display: none;
+	position: absolute;
+	top: 4rem;
+	right: 2rem;
+}
+
+.buttonShort,
+.buttonLong,
+.buttonToggle {
+	color: #a9a4b2;
+	border: 2px solid #a9a4b2;
+	border-radius: 10px;
+	padding: 7px;
+	transition: 0.14s;
+	font-weight: 600;
+	cursor: pointer;
+}
+.buttonShort,
+.buttonToggle {
+	width: 8.8em;
+	font-size: 12px;
+	letter-spacing: -0.6px;
+	background-color: rgba(0, 0, 0, 0.6);
+}
+.buttonLong {
+	width: 16em;
+	font-size: 13px;
+	letter-spacing: -0.5px;
+	background-color: rgb(0, 0, 0, 0.4);
+}
+
+.buttonShort:hover,
+.buttonLong:hover,
+.buttonToggle[value="true"] {
+	background-color: rgba(0, 0, 0, 0.75);
+	color: white;
+	border-color: white;
+}
+
+label {
+	font-family: "Roboto", sans-serif;
+	color: white;
+}
+
+h1 {
+	font-family: "Rodondo";
+	font-size: 8em;
+	letter-spacing: 5px;
+	color: white;
+	text-shadow: 4px 4px 4px black;
+	font-weight: 100;
+	margin-top: 9vh;
+}
+h2 {
+	font-family: "Roboto", sans-serif;
+	font-size: 1.2em;
+	color: #a5a5a5;
+	text-shadow: 1px 1px 1px black;
+	margin-top: 4vh;
+	margin-bottom: 16vh;
+}
+
+#content {
+	width: 100vw;
+	height: 100vh;
+	background-size: 100%;
+	display: flex;
+	flex-direction: column;
+	/* justify-content: space-evenly; */
+	align-items: center;
+}
+
+.container {
+	border: 2px solid white;
+	border-radius: 10px;
+	background-color: rgba(0, 0, 0, 0.8);
+	padding: 12px;
+	width: 50rem;
+	height: 10rem;
+	text-align: center;
+}
+
+hr {
+	border: 1px solid #a9a4b2;
+}
+
+#transitionEffect {
+	width: 100vw;
+	height: 100vh;
+	position: absolute;
+	z-index: -1;
+	background-color: transparent;
+	transition: 0.3s;
+}
