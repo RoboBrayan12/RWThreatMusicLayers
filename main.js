@@ -60,6 +60,17 @@ for (let soundtrackItem in soundtrackNames) {
 	menu.appendChild(newButton)
 }
 
+let soundtrack = "SU"
+applySoundtrack(soundtrack)
+
+function playUISound(value, ignore) {
+	const baseAudio = document.querySelector("#audio_" + soundtracklayers[soundtrack][0])
+	if (ignore || baseAudio.currentTime == 0 || baseAudio.paused || baseAudio.ended) {
+		sound_UI[value].currentTime = 0
+		sound_UI[value].play()
+	}
+}
+
 function toggleMenu() {
 	if (menu.style.display == "inline-flex") {
 		menu.style.display = "none"
@@ -80,9 +91,6 @@ function loadSoundTrack(value) {
 		transitionEffect.style.zIndex = -1
 	}, 500)
 }
-
-let soundtrack = "SU"
-applySoundtrack(soundtrack)
 
 function applySoundtrack(value) {
 	soundtrack = value
@@ -142,14 +150,6 @@ function applySoundtrack(value) {
 	})
 }
 
-function playUISound(value, ignore) {
-	const baseAudio = document.querySelector("#audio_" + soundtracklayers[soundtrack][0])
-	if (ignore || baseAudio.currentTime == 0 || baseAudio.paused || baseAudio.ended) {
-		sound_UI[value].currentTime = 0
-		sound_UI[value].play()
-	}
-}
-
 function playAll() {
 	playToggle.value = true
 	pauseToggle.value = false
@@ -184,7 +184,6 @@ function resync() {
 		document.querySelector("#audio_" + layer).currentTime = baseTime
 	}
 }
-
 function toggleLoop(checked) {
 	playUISound("Metal1")
 	loopToggle.value = checked

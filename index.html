@@ -9,14 +9,13 @@
 		<link rel="stylesheet" href="style.css" />
 	</head>
 	<body>
+		<audio src="sounds/UIMetal1.wav" id="sound_UIMetal1"></audio>
+		<audio src="sounds/UIMetal3.wav" id="sound_UIMetal3"></audio>
+		<audio src="sounds/UIArp.wav" id="sound_UIArp"></audio>
 		<div id="content">
 			<button type="button" id="selectButton" class="buttonShort" onclick="toggleMenu()">ESCOLHER</button>
-			<audio src="sounds/UIMetal1.wav" id="sound_UIMetal1"></audio>
-			<audio src="sounds/UIMetal3.wav" id="sound_UIMetal3"></audio>
 			<div id="soundtrackMenu"></div>
-			<div id="transitionEffect">
-				<audio src="sounds/UIArp.wav" id="sound_UIArp"></audio>
-			</div>
+			<div id="transitionEffect"></div>
 			<h1 id="soundtrackTitle">Title</h1>
 			<h2 id="soundtrackName">Name</h2>
 			<div class="container">
@@ -27,8 +26,8 @@
 				<button type="button" class="buttonToggle" id="loopToggle" value="false" onclick="toggleLoop(this.value != `true`)">Loop</button>
 				<hr />
 				<section id="groupSwitch"></section>
-				<script src="main.js"></script>
 			</div>
 		</div>
+		<script src="main.js"></script>
 	</body>
 </html>
