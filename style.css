@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
 @font-face {
 	font-family: "Rodondo";
-	src: url("fonts/rodondo.otf") format("opentype");
+	src: url("assets/rodondo.otf") format("opentype");
 }
 
 #selectButton {
@@ -93,11 +93,11 @@ h2 {
 	display: inline-block;
 }
 
-#groupSwitch {
+#layerSection {
 	display: inline-block;
 	width: 34rem;
 }
-#groupSwitch button {
+#layerSection button {
 	margin-bottom: 5px;
 	margin-right: 5px;
 }

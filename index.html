@@ -3,15 +3,15 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="icon" href="images/icon.png" />
+		<link rel="icon" href="assets/icon.png" />
 		<title>RW Threat Music Player</title>
-		<link rel="stylesheet" href="reset.css" />
+		<link rel="stylesheet" href="assets/reset.css" />
 		<link rel="stylesheet" href="style.css" />
 	</head>
 	<body>
-		<audio src="sounds/UIMetal1.wav" id="sound_UIMetal1"></audio>
-		<audio src="sounds/UIMetal3.wav" id="sound_UIMetal3"></audio>
-		<audio src="sounds/UIArp.wav" id="sound_UIArp"></audio>
+		<audio src="assets/UIMetal1.wav" id="sound_UIMetal1"></audio>
+		<audio src="assets/UIMetal3.wav" id="sound_UIMetal3"></audio>
+		<audio src="assets/UIArp.wav" id="sound_UIArp"></audio>
 		<div id="content">
 			<button type="button" id="selectButton" class="buttonShort" onclick="toggleMenu()">ESCOLHER</button>
 			<div id="soundtrackMenu"></div>
@@ -24,8 +24,9 @@
 				<button type="button" class="buttonShort" onclick="stopAll()">Stop</button>
 				<button type="button" class="buttonShort" onclick="resync()">Sync</button>
 				<button type="button" class="buttonToggle" id="loopToggle" value="false" onclick="toggleLoop(this.value)">Loop</button>
+				<!-- <button type="button" class="buttonShort" onclick="jump()">Jump</button> -->
 				<hr />
-				<section id="groupSwitch"></section>
+				<section id="layerSection"></section>
 			</div>
 		</div>
 		<script src="main.js"></script>
