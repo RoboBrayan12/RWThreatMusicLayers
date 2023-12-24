@@ -39,6 +39,7 @@ const soundtrackName = document.getElementById("soundtrackName")
 const playToggle = document.getElementById("playToggle")
 const pauseToggle = document.getElementById("pauseToggle")
 const loopToggle = document.getElementById("loopToggle")
+const randomizerToggle = document.getElementById("randomizerToggle")
 const layerSection = document.getElementById("layerSection")
 const background = document.getElementById("content")
 const transitionEffect = document.getElementById("transitionEffect")
@@ -49,6 +50,8 @@ sound_UI["Metal1"] = document.querySelector(`#sound_UIMetal1`)
 sound_UI["Metal3"] = document.querySelector(`#sound_UIMetal3`)
 
 var soundtrack = "SU"
+
+let randomizerState = "increasing" // decreasing
 
 for (let soundtrackItem in soundtrackNames) {
 	const newButton = document.createElement("button")
@@ -110,13 +113,13 @@ function loadSoundTrack(value) {
 	transitionEffect.style.backgroundColor = "black"
 	playUISound("Arp", true)
 	setTimeout(function () {
-		applySoundtrack(value)
+		applySoundtrack(value, true)
 		transitionEffect.style.backgroundColor = "transparent"
 		transitionEffect.style.zIndex = -1
 	}, 500)
 }
 
-function applySoundtrack(value) {
+function applySoundtrack(value, onPurpose) {
 	soundtrack = value
 
 	let children = layerSection.children
@@ -139,9 +142,12 @@ function applySoundtrack(value) {
 			layerSection.style.width = "34rem"
 	}
 
-	playToggle.value = false
-	pauseToggle.value = false
-	loopToggle.value = false
+	if (onPurpose) {
+		playToggle.value = false
+		pauseToggle.value = false
+		loopToggle.value = false
+		randomizerToggle.value = false
+	}
 
 	soundtrackTitle.innerHTML = soundtrackNames[soundtrack][0]
 	soundtrackName.innerHTML = `~ ${soundtrackNames[soundtrack][1]} ~`
@@ -169,10 +175,27 @@ function applySoundtrack(value) {
 	const baseAudio = document.querySelector("#audio_" + soundtrackLayers[soundtrack][0])
 
 	baseAudio.addEventListener("timeupdate", function () {
-		if (this.loop && this.currentTime > this.duration - 0.4) {
-			setTimeout(function () {
-				allLayers("set", 0)
-			}, (this.duration - 0.06 - this.currentTime) * 1000)
+		if (this.loop && this.currentTime > this.duration - 0.35) {
+			if (randomizerState == "next" && randomizerToggle.value == "true") {
+				randomizerState = "increasing"
+				transitionEffect.style.zIndex = 1
+				transitionEffect.style.backgroundColor = "black"
+				setTimeout(function () {
+					applySoundtrack(Object.keys(soundtrackNames)[Math.floor(Math.random() * Object.keys(soundtrackNames).length)], false)
+					transitionEffect.style.backgroundColor = "transparent"
+					transitionEffect.style.zIndex = -1
+					allLayers("play")
+					allLayers("loop", true)
+					randomizer(2)
+				}, 500)
+			} else {
+				setTimeout(function () {
+					allLayers("set", 0)
+					if (randomizerToggle.value == "true") {
+						randomizer()
+					}
+				}, (this.duration - 0.06 - this.currentTime) * 1000)
+			}
 		}
 	})
 
@@ -192,11 +215,18 @@ function pauseAll() {
 	pauseToggle.value = true
 	allLayers("pause")
 }
-function stopAll() {
+function reset() {
 	playUISound("Metal3", true)
 	playToggle.value = false
 	pauseToggle.value = false
+	loopToggle.value = false
+	randomizerToggle.value = false
 	allLayers("stop", 0)
+	allLayers("loop", false)
+	for (let layer of soundtrackLayers[soundtrack]) {
+		document.getElementById("switch_" + layer).value = false
+		document.getElementById("audio_" + layer).volume = 0
+	}
 }
 function resync() {
 	playUISound("Metal1")
@@ -210,6 +240,11 @@ function toggleLoop(checked) {
 	checked = checked != `true`
 	loopToggle.value = checked
 	allLayers("loop", checked)
+}
+function toggleRandomizer(checked) {
+	playUISound("Metal1")
+	checked = checked != `true`
+	randomizerToggle.value = checked
 }
 
 function toggleLayer(element) {
@@ -225,3 +260,119 @@ function jump() {
 	allLayers("set", baseTime)
 }
 */
+
+function randomizer(value) {
+	/*
+	let layersLength = soundtrackLayers[soundtrack].length
+	
+	let selectedMax = 0
+	if (layersLength % 2 == 0) {
+		selectedMax = layersLength / 2
+	} else {
+		selectedMax = (layersLength - 1) / 2
+	}
+
+	let selectedNumb = Math.floor(Math.random() * selectedMax) + 2
+	console.log("selectedNumb: " + selectedNumb)
+	*/
+
+	let activeLayers = []
+	let inactiveLayers = []
+	for (let layer of soundtrackLayers[soundtrack]) {
+		let audio = document.getElementById("audio_" + layer)
+		if (audio.volume == 1) {
+			activeLayers.push(layer)
+		} else {
+			inactiveLayers.push(layer)
+		}
+	}
+
+	if (activeLayers.length <= 2) {
+		randomizerState = "increasing"
+	} else if (inactiveLayers.length == 0) {
+		randomizerState = "decreasing"
+	}
+
+	let selectedNumb = Math.floor(Math.random() * 3) + 1
+	if (value) selectedNumb = value
+	console.log("selectedNumb: " + selectedNumb)
+	let iteratedLayers = []
+
+	while (iteratedLayers.length < selectedNumb) {
+		let toggleCondition = iteratedLayers.length < 2 //increasing
+		if (randomizerState == "decreasing") {
+			toggleCondition = iteratedLayers.length > 1
+		}
+
+		let onlyIteratedInactive = iteratedLayers.sort().join(",") === inactiveLayers.sort().join(",")
+		let onlyIteratedActive = iteratedLayers.sort().join(",") === activeLayers.sort().join(",")
+
+		if (toggleCondition) {
+			// Activate Layer
+			if (inactiveLayers.length == 0) {
+				console.log("inactiveLayers length = 0")
+				break
+			}
+			if (onlyIteratedInactive) {
+				console.log("onlyIteratedInactive")
+				break
+			}
+
+			let selectedOrder = Math.floor(Math.random() * inactiveLayers.length)
+			let layer = inactiveLayers[selectedOrder]
+			if (iteratedLayers.includes(layer)) {
+				console.log("iteratedLayers includes " + layer)
+				continue
+			}
+
+			document.getElementById("audio_" + layer).volume = 1
+			document.getElementById("switch_" + layer).value = true
+
+			inactiveLayers = inactiveLayers.filter((item) => item != layer)
+			activeLayers.push(layer)
+			iteratedLayers.push(layer)
+
+			console.log("enabled " + layer)
+		} else {
+			// Deactivate Layer
+			if (activeLayers.length == 0) {
+				console.log("activeLayers length = 0")
+				break
+			}
+			if (onlyIteratedActive) {
+				console.log("onlyIteratedActive")
+				break
+			}
+
+			let selectedOrder = Math.floor(Math.random() * activeLayers.length)
+			let layer = activeLayers[selectedOrder]
+			if (iteratedLayers.includes(layer)) {
+				console.log("iteratedLayers includes " + layer)
+				continue
+			}
+
+			document.getElementById("audio_" + layer).volume = 0
+			document.getElementById("switch_" + layer).value = false
+
+			activeLayers = activeLayers.filter((item) => item != layer)
+			inactiveLayers.push(layer)
+			iteratedLayers.push(layer)
+
+			console.log("disabled " + layer)
+		}
+
+		if (randomizerState == "decreasing" && activeLayers.length <= 2) {
+			randomizerState = "next"
+			break
+		} else if (inactiveLayers.length == 0) {
+			randomizerState = "decreasing"
+			break
+		}
+	}
+
+	console.log("iteratedLayers: " + iteratedLayers)
+	console.log("activeLayers: " + activeLayers)
+	console.log("inactiveLayers: " + inactiveLayers)
+	console.log("randomizerState: " + randomizerState)
+	console.log("----------")
+}
